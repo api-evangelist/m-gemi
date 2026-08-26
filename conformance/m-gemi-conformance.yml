@@ -1,0 +1,102 @@
+generated: '2026-08-25'
+method: probed
+source: https://mgemi.com/.well-known/ucp + https://mgemi.com/.well-known/openid-configuration + https://mgemi.com/api/ucp/mcp + https://mgemi.com/llms.txt
+standards:
+- id: ucp
+  name: Universal Commerce Protocol
+  conforms: true
+  version: '2026-04-08'
+  evidence: >-
+    https://mgemi.com/.well-known/ucp returns a UCP merchant profile declaring
+    version 2026-04-08 with 2026-01-23 also supported, service dev.ucp.shopping over
+    transport "mcp", and eight capability namespaces (catalog.search, catalog.lookup,
+    cart, checkout, fulfillment, discount, order, dev.shopify.catalog).
+    https://mgemi.com/llms.txt states "This store implements the Universal Commerce
+    Protocol (UCP) for agent-driven commerce."
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  version_negotiated: '2024-11-05'
+  evidence: >-
+    Anonymous JSON-RPC 2.0 initialize against https://mgemi.com/api/ucp/mcp returns
+    serverInfo {name: universal-commerce, version: 0.1.0} and protocolVersion 2024-11-05;
+    tools/list returns 13 tools each with a JSON Schema inputSchema.
+- id: jsonrpc-2.0
+  name: JSON-RPC 2.0
+  conforms: true
+  evidence: >-
+    All MCP traffic is JSON-RPC 2.0; an unknown method returns a well-formed error object
+    {"code":-32001,"message":"UCP discovery failed","data":{...}}.
+- id: json-schema-2020-12
+  name: JSON Schema 2020-12
+  conforms: true
+  evidence: >-
+    Every tool inputSchema in mcp/m-gemi-mcp-tools-list.json declares
+    "$schema":"https://json-schema.org/draft/2020-12/schema".
+- id: oidc
+  name: OpenID Connect Discovery 1.0
+  conforms: true
+  evidence: >-
+    https://mgemi.com/.well-known/openid-configuration returns a complete discovery
+    document (issuer, authorization_endpoint, token_endpoint, jwks_uri,
+    id_token_signing_alg_values_supported RS256, claims_supported).
+- id: oauth2
+  name: OAuth 2.0 Authorization Server Metadata (RFC 8414)
+  conforms: true
+  evidence: >-
+    https://mgemi.com/.well-known/oauth-authorization-server returns RFC 8414 metadata
+    with code_challenge_methods_supported [S256] and grant_types_supported
+    [authorization_code, refresh_token, jwt-bearer].
+- id: iso-4217
+  name: ISO 4217 currency minor units
+  conforms: true
+  evidence: >-
+    Every UCP MCP tool description states prices are integers in the currency's ISO 4217
+    minor units paired with a currency code.
+- id: iso-3166-1-alpha-2
+  name: ISO 3166-1 alpha-2 country codes
+  conforms: true
+  evidence: >-
+    Billing/shipping address schemas in create_checkout declare address_country as
+    "2-letter ISO 3166-1 alpha-2 format".
+- id: rfc8615
+  name: Well-Known URIs (RFC 8615)
+  conforms: true
+  evidence: >-
+    Three documents served under /.well-known/ on mgemi.com; see
+    well-known/m-gemi-well-known.yml. A control probe of a nonsense /.well-known/ path
+    returns 404, so these are real registrations rather than a catch-all.
+- id: rfc9116
+  name: security.txt (RFC 9116)
+  conforms: false
+  evidence: https://mgemi.com/.well-known/security.txt returned HTTP 404 on 2026-08-25.
+- id: rfc9457
+  name: Problem Details for HTTP APIs (RFC 9457)
+  conforms: false
+  evidence: >-
+    Errors are JSON-RPC error objects, not application/problem+json. Not applicable to a
+    JSON-RPC transport; recorded as a negative rather than a defect.
+domain_standard:
+  market: retail / e-commerce / agentic commerce
+  standard: Universal Commerce Protocol (UCP) 2026-04-08
+  declared_in_contract: true
+  evidence: >-
+    The contract declares the standard about itself, not merely in marketing prose: the
+    merchant profile at https://mgemi.com/.well-known/ucp names service "dev.ucp.shopping"
+    against spec https://ucp.dev/2026-04-08/specification/overview/ and binds each
+    capability to a published ucp.dev JSON Schema
+    (https://ucp.dev/2026-04-08/schemas/shopping/checkout.json, cart.json,
+    catalog_search.json, catalog_lookup.json, fulfillment.json, discount.json,
+    order.json). Payment handlers are namespaced to their own published specs
+    (com.google.pay, dev.shopify.card, dev.shopify.shop_pay). An agent that already speaks
+    UCP transacts with M.Gemi with no bespoke connector.
+  note: >-
+    UCP is implemented by the Shopify platform on M.Gemi's behalf rather than authored by
+    M.Gemi. The conformance is real and buyer-visible on M.Gemi's own host; the credit for
+    the implementation belongs to the platform.
+compliance_certifications:
+  found: false
+  note: >-
+    No trust center, SOC 2 / ISO 27001 / PCI attestation page or compliance program was
+    found on any M.Gemi host. probe-security-programs.py returned vdp=none trust=none.
+    No Compliance pointer is emitted.

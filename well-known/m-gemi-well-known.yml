@@ -1,0 +1,60 @@
+generated: '2026-08-25'
+method: probed
+source: live GET probes of /.well-known/* on every M.Gemi host
+note: >-
+  mgemi.com is NOT a catch-all host: a control probe of
+  /.well-known/api-evangelist-control-probe-xyz returned HTTP 404 (4,264 bytes of the
+  Shopify 404 page), so the three 200s below are genuine served documents, not SPA
+  shells. security.txt, api-catalog, ai-plugin.json and both agent-card paths all 404.
+  The OIDC/OAuth documents are Shopify Customer Account platform discovery served on
+  M.Gemi's own store host and scoped to M.Gemi's shop tenant (issuer
+  https://shopify.com/authentication/13666484283, the shop id also reported by
+  https://mgemi.com/meta.json).
+hit_count: 3
+soft_404_control:
+  path: /.well-known/api-evangelist-control-probe-xyz
+  status: 404
+  bytes: 4264
+hosts:
+- host: https://mgemi.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: m-gemi-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: m-gemi-oauth-authorization-server.json
+  - path: /.well-known/ucp
+    status: 200
+    file: m-gemi-ucp.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://mgemi.myshopify.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: m-gemi-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: m-gemi-oauth-authorization-server.json
+  - path: /.well-known/ucp
+    status: 200
+    file: m-gemi-ucp.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404

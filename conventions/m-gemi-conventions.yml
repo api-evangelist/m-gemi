@@ -1,0 +1,142 @@
+generated: '2026-08-25'
+method: probed
+source: https://mgemi.com/api/ucp/mcp (tools/list) + https://mgemi.com/llms.txt + https://mgemi.com/.well-known/ucp
+scope: >-
+  Cross-cutting runtime semantics for the M.Gemi UCP commerce MCP endpoint and the
+  read-only Shopify storefront JSON surface the store's own agent instructions document.
+transport:
+  protocol: JSON-RPC 2.0 over HTTPS POST (Model Context Protocol)
+  endpoint: https://mgemi.com/api/ucp/mcp
+  content_type: application/json
+  accept: application/json, text/event-stream
+authentication:
+  style: UCP agent profile URI in meta.ucp-agent.profile; no API keys issued
+  buyer_approval_required_for: checkout completion
+  see: authentication/m-gemi-authentication.yml
+identifiers:
+  style: Shopify global IDs
+  format: 'gid://shopify/<Type>/<id>'
+  example_from_docs: 'gid://shopify/Checkout/abc123'
+money:
+  representation: integer minor units + ISO 4217 currency code
+  shape: '{"amount": 2500, "currency": "USD"} is $25.00'
+  caution: >-
+    Stated verbatim in all 13 tool descriptions - agents must divide by 100 for
+    two-decimal currencies before quoting a price to a buyer; zero-decimal currencies
+    such as JPY are already whole units.
+  source: mcp/m-gemi-mcp-tools-list.json
+localization:
+  buyer_context_fields: [context.address_country, context.currency]
+  guidance: >-
+    "Use buyer context. Pass context.address_country and context.currency for accurate
+    pricing and availability."
+  source: https://mgemi.com/llms.txt
+  ships_to_countries: [US]
+  currency: USD
+  source_meta: https://mgemi.com/meta.json
+idempotency:
+  supported: partial
+  mechanism: resource-scoped mutation, not a request-replay header
+  detail: >-
+    No Idempotency-Key header is documented or accepted. Idempotency is instead structural:
+    cart and checkout are addressable resources with explicit lifecycles, so create_cart /
+    create_checkout mint an id and every subsequent mutation is update_cart / update_checkout
+    against that id rather than a repeated create. complete_checkout is the single
+    non-repeatable operation and is guarded by required buyer approval at the moment of
+    payment; a completed checkout returns an order ID and Thank You Page URL, so a replay is
+    detectable by the agent via get_checkout / get_order before re-firing.
+  retention: not published
+  header: null
+  source: >-
+    Derived from the tool set and required fields in mcp/m-gemi-mcp-tools-list.json
+    (probed 2026-08-25) plus the buyer-approval rule in https://mgemi.com/llms.txt.
+pagination:
+  style: not published
+  detail: >-
+    search_catalog and lookup_catalog take a `catalog` object; no page/cursor/limit
+    parameter is documented at the M.Gemi surface. The governing schema is
+    https://ucp.dev/2026-04-08/schemas/shopping/catalog_search.json, published by ucp.dev
+    rather than by M.Gemi. The read-only Shopify storefront JSON surface uses Shopify's
+    standard ?page= and ?limit= query parameters.
+error_envelope:
+  format: JSON-RPC 2.0 error object
+  shape: '{"jsonrpc":"2.0","id":N,"error":{"code":<int>,"message":<string>,"data":{"code":<slug>,"content":<string>,"continue_url":<url>}}}'
+  observed_example:
+    code: -32001
+    message: UCP discovery failed
+    data:
+      code: invalid_profile_url
+      content: 'Unable to fetch agent profile: Missing profile uri'
+      continue_url: https://mgemi.myshopify.com/
+  see: errors/m-gemi-problem-types.yml
+rate_limiting:
+  documented: true
+  numbers_published: false
+  statement: >-
+    "Respect rate limits. The MCP endpoint is rate-limited per IP. Back off on 429
+    responses."
+  source: https://mgemi.com/llms.txt
+  observed_response_headers: [shopify-complexity-score, shopify-complexity-score-v2, x-request-id]
+  see: rate-limits/m-gemi-rate-limits.yml
+request_tracing:
+  header: x-request-id
+  observed: true
+  detail: >-
+    Every response from mgemi.com, including the MCP endpoint, carries an x-request-id
+    (observed eb040b12-5fc1-46ff-8eda-85abc4468c2c-1787705345 on 2026-08-25). Shopify also
+    returns server-timing with a requestID field on storefront HTML responses.
+versioning:
+  scheme: dated UCP protocol versions
+  current: '2026-04-08'
+  also_supported: ['2026-01-23']
+  negotiation: >-
+    Per-version merchant profiles are published at
+    /.well-known/ucp/2026-04-08 and /.well-known/ucp/2026-01-23. The MCP layer negotiates
+    separately; initialize returned protocolVersion 2024-11-05.
+  see: lifecycle/m-gemi-lifecycle.yml
+dry_run_mode:
+  supported: false
+  detail: >-
+    No sandbox, test mode, test card or simulated-store surface is published. The cart and
+    checkout resources are the closest rehearsal path: an agent can build a real checkout
+    and read totals, taxes and discounts via get_checkout without completing payment, then
+    cancel_checkout. That is a live-mode rehearsal, not a dry run.
+reversibility:
+  applicable: true
+  grade: verified
+  detail: >-
+    The write surface has explicit reversal operations at every stage, and the
+    post-purchase window is stated by the provider in its own policy pages.
+  operations:
+  - action: cart creation / modification
+    write_tool: create_cart, update_cart
+    reversal_tool: cancel_cart
+    window: not stated
+    grade: documented
+    source: https://mgemi.com/api/ucp/mcp tools/list (probed 2026-08-25)
+  - action: checkout creation / modification
+    write_tool: create_checkout, update_checkout
+    reversal_tool: cancel_checkout
+    window: before complete_checkout - once a checkout is completed it returns an order ID
+      and the cancel path is the returns policy below, not cancel_checkout
+    grade: verified
+    source: https://mgemi.com/api/ucp/mcp tools/list (probed 2026-08-25)
+  - action: payment / order placement
+    write_tool: complete_checkout
+    reversal_tool: return or exchange (no API operation; buyer-service process)
+    window: 14 days from delivery, for eligible items in original unworn condition; one
+      free exchange per order
+    grade: verified
+    source: https://mgemi.com/pages/faq
+    also: https://mgemi.com/policies/refund-policy
+  guard_before_write: >-
+    complete_checkout requires contemporaneous buyer approval; an agent that cannot obtain
+    it is instructed to route the purchase through Shop Pay via https://shop.app/SKILL.md
+    instead. This is the provider's own stated invariant, not our inference.
+notes:
+- >-
+  repair-api-bases.py flags the M.Gemi Storefront Product JSON entry as
+  "marketing-base-present" because its baseURL is the site root. That is correct here and
+  not a defect: the store's own /llms.txt documents the read-only endpoints as site-root
+  paths (GET /products.json, GET /products/{handle}.json,
+  GET /collections/{handle}/products.json, GET /search). The root IS the base.

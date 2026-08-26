@@ -1,0 +1,51 @@
+generated: '2026-08-25'
+method: probed
+source: live JSON-RPC probes of https://mgemi.com/api/ucp/mcp, 2026-08-25
+format: jsonrpc-error
+note: >-
+  M.Gemi publishes no error reference page. This catalog records only error shapes
+  actually observed on the live endpoint plus the one status code the store's own
+  /llms.txt names. It is deliberately short: no error code was inferred from the UCP
+  specification or invented.
+envelope:
+  shape: '{"jsonrpc":"2.0","id":<id>,"error":{"code":<int>,"message":<string>,"data":{"code":<slug>,"content":<string>,"continue_url":<url>}}}'
+  content_type: application/json
+  http_status_on_error: 200
+  detail: >-
+    The transport returns HTTP 200 and carries the failure in the JSON-RPC error member,
+    so agents must inspect the body rather than the status line - with the documented
+    exception of 429.
+problem_types:
+- code: -32001
+  slug: invalid_profile_url
+  title: UCP discovery failed
+  observed_message: 'Unable to fetch agent profile: Missing profile uri'
+  cause: >-
+    A tools/call was made without meta.ucp-agent.profile, so the server could not resolve
+    the calling agent's UCP profile document.
+  remediation: >-
+    Publish a UCP agent profile and pass its URI as meta["ucp-agent"].profile on every
+    tool call. tools/list and initialize do not require it.
+  data_fields: [code, content, continue_url]
+  observed: true
+  evidence: 'POST https://mgemi.com/api/ucp/mcp {"method":"no_such_method"} and
+    {"method":"tools/call","params":{"name":"search_catalog","arguments":{}}} both returned
+    this error on 2026-08-25.'
+- code: 429
+  slug: rate-limited
+  title: Too Many Requests
+  transport: HTTP status
+  cause: Per-IP rate limit on the MCP endpoint exceeded.
+  remediation: Back off and retry.
+  observed: false
+  evidence: >-
+    Documented by the provider at https://mgemi.com/llms.txt - "The MCP endpoint is
+    rate-limited per IP. Back off on 429 responses." Not reproduced; no load was generated
+    against the store.
+not_captured:
+  reason: >-
+    Because tools/call is gated behind a UCP agent profile, no successful or
+    business-logic-failing tool invocation could be made anonymously. Out-of-stock,
+    invalid-variant, payment-declined and address-validation error shapes therefore
+    require an authenticated/profiled agent to enumerate and are not recorded here rather
+    than being guessed.

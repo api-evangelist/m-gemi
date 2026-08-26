@@ -1,0 +1,58 @@
+generated: '2026-08-25'
+method: probed
+source: https://mgemi.com/.well-known/ucp + https://mgemi.com/api/ucp/mcp initialize
+versioning:
+  scheme: dated protocol versions (UCP) with separate MCP protocol negotiation
+  current: '2026-04-08'
+  supported:
+  - version: '2026-04-08'
+    status: latest stable
+    profile: https://mgemi.myshopify.com/.well-known/ucp/2026-04-08
+  - version: '2026-01-23'
+    status: supported
+    profile: https://mgemi.myshopify.com/.well-known/ucp/2026-01-23
+  mcp_protocol_version_negotiated: '2024-11-05'
+  detail: >-
+    Two UCP versions are served concurrently from per-version profile URLs, which is a
+    genuine side-by-side versioning posture rather than a single mutable endpoint. Both
+    are declared by the store's own /.well-known/ucp and repeated in its /llms.txt
+    ("Supported UCP Versions: 2026-04-08 (latest stable), 2026-01-23").
+deprecation_policy:
+  published: false
+  sunset_header: not observed
+  deprecation_header: not observed
+  note: >-
+    No deprecation or sunset policy is published for the commerce surface, and no RFC 8594
+    Sunset/Deprecation header was returned. The presence of an older supported UCP version
+    implies overlap but no retirement date is stated. No Deprecation pointer is emitted.
+status_page:
+  published: false
+  probed:
+  - url: https://status.mgemi.com/
+    status: 000
+    detail: DNS does not resolve
+  note: >-
+    M.Gemi publishes no status page of its own. The underlying platform status page
+    (https://www.shopifystatus.com/) is Shopify's, not M.Gemi's, so no StatusPage pointer
+    is emitted on M.Gemi's behalf.
+sla:
+  published: false
+  note: No API SLA is published; the store publishes merchandise shipping timeframes only.
+changelog:
+  published: false
+  note: >-
+    No dated API or agent-surface changelog was found. https://mgemi.com/blogs/news is a
+    merchandising blog, not a release log, so no ChangeLog pointer is emitted.
+deprecated_operations: []
+support:
+  channels:
+  - type: email
+    value: assistant@mgemi.com
+  - type: phone
+    value: '+1-844-574-4364'
+  - type: sms
+    value: '781.836.4364'
+  - type: chat
+    value: on-site chat widget
+  hours: Monday to Friday, 9am-6pm ET
+  source: https://mgemi.com/pages/faq

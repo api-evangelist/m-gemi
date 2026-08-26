@@ -1,0 +1,32 @@
+generated: '2026-08-25'
+method: generated
+source: >-
+  Grounded in the live tool set at https://mgemi.com/api/ucp/mcp (anonymous tools/list,
+  probed 2026-08-25), the store's own agent instructions at https://mgemi.com/llms.txt and
+  https://mgemi.com/agents.md, the UCP merchant profile at
+  https://mgemi.com/.well-known/ucp, and the published returns window at
+  https://mgemi.com/pages/faq. Every operation named in these skills is a tool name
+  returned by the live endpoint; none was invented.
+provider_published_skills:
+  found: false
+  note: >-
+    M.Gemi publishes no skill of its own. Its /llms.txt recommends a third-party skill,
+    https://shop.app/SKILL.md (HTTP 200, 16,893 bytes, verified 2026-08-25), which is
+    Shopify's cross-store Shop skill and is NOT M.Gemi's artifact - it is referenced from
+    the skills below rather than saved here.
+skill_count: 2
+skills:
+- name: m-gemi-catalog-search
+  file: m-gemi-catalog-search.md
+  description: Search and read the M.Gemi catalog via UCP MCP or the read-only storefront
+    JSON endpoints.
+  api: M.Gemi UCP Commerce MCP API
+  operations: [search_catalog, lookup_catalog, get_product]
+- name: m-gemi-agentic-purchase
+  file: m-gemi-agentic-purchase.md
+  description: Complete a buyer-approved purchase over UCP - cart, checkout, fulfillment,
+    payment approval - and reverse it correctly.
+  api: M.Gemi UCP Commerce MCP API
+  operations: [search_catalog, create_cart, update_cart, get_cart, cancel_cart,
+    create_checkout, update_checkout, get_checkout, complete_checkout, cancel_checkout,
+    get_order]

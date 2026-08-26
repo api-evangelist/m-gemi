@@ -1,0 +1,23 @@
+generated: '2026-08-25'
+method: probed
+source: https://mgemi.com/.well-known/openid-configuration
+docs: https://mgemi.com/.well-known/oauth-authorization-server
+authorization_server: https://shopify.com/authentication/13666484283
+note: >-
+  Scopes are advertised by the Shopify Customer Account OIDC/RFC 8414 discovery documents
+  served on M.Gemi's own store host for M.Gemi's shop tenant. M.Gemi publishes no scope
+  reference page of its own; these are the values the server itself declares in
+  scopes_supported.
+scope_count: 4
+scopes:
+- name: openid
+  description: OpenID Connect sign-in; requests an ID token for the customer.
+- name: email
+  description: Access to the customer's email address and email_verified claim.
+- name: customer-account-api:full
+  description: Full access to the Shopify Customer Account API for the signed-in customer
+    of the M.Gemi store.
+- name: customer-account-mcp-api:full
+  description: Full access to the Shopify Customer Account MCP API for the signed-in
+    customer - the authenticated counterpart to the anonymous UCP commerce MCP endpoint.
+claims_supported: [iss, sub, aud, exp, iat, nonce, sid, email, email_verified]

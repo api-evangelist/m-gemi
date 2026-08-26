@@ -1,0 +1,42 @@
+generated: '2026-08-25'
+method: searched
+source: https://mgemi.com/llms.txt
+also_checked:
+- url: https://mgemi.com/pages/faq
+  status: 200
+- url: https://mgemi.com/policies/terms-of-service
+  status: 200
+plan_count: 0
+note: >-
+  M.Gemi sells shoes, not API access. There is no developer program, no API pricing page,
+  no tiers, no quota and no metered plan. The UCP commerce MCP endpoint at
+  https://mgemi.com/api/ucp/mcp is open to any agent that presents a UCP agent profile and
+  is not sold. Recorded as an explicit zero rather than omitted: the absence is the
+  finding, and it is the correct posture for an agent-commerce surface whose revenue is
+  the merchandise, not the API.
+plans: []
+commercial_model:
+  what_is_sold: footwear and leather goods, direct to consumer
+  api_monetized: false
+  shipping_tiers_observed:
+  - name: Cliente Rewards
+    price: 0
+    currency: USD
+    detail: free shipping for rewards members; arrives in 3-6 business days
+  - name: Standard
+    price: 8
+    currency: USD
+    detail: arrives in 3-6 business days
+  - name: 2nd-Day Air
+    price: 25
+    currency: USD
+    detail: arrives within 2 business days
+  - name: Next-Day Air
+    price: 40
+    currency: USD
+    detail: arrives next business day
+  shipping_source: https://mgemi.com/pages/faq
+  shipping_note: >-
+    Listed for completeness because it is the only published price schedule on the
+    property. These are merchandise shipping charges, NOT API plans, and must not be read
+    as tiers of API access.

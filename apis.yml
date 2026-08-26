@@ -1,23 +1,127 @@
 aid: m-gemi
 name: M.Gemi
-description: 'M.Gemi is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'M.Gemi is a Boston-based direct-to-consumer footwear and leather-goods
+  brand founded in 2015 by Maria Gangemi and Cheryl Kaplan, selling handcrafted Italian
+  shoes and handbags made in small batches by family-owned workshops across Italy and
+  released weekly. Its public API surface is not a developer program but an agent-commerce
+  surface: the mgemi.com storefront publishes an /llms.txt and /agents.md agent instruction
+  document, a Universal Commerce Protocol (UCP) merchant profile at /.well-known/ucp, and a
+  live, unauthenticated Model Context Protocol endpoint at /api/ucp/mcp exposing 13 tools for
+  catalog search, cart, checkout and order retrieval, alongside the read-only Shopify storefront
+  product JSON endpoints its own agent instructions document. Customer identity is served by a
+  Shopify Customer Account OpenID Connect discovery document on the store host.'
+image: https://cdn.shopify.com/s/files/1/0136/6648/4283/files/logomark2_d8d577da-e62c-4ca0-85a8-03466eb5c403.png?v=1632354360
 url: https://raw.githubusercontent.com/api-evangelist/m-gemi/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
 - Company
-apis: []
+- Retail
+- E-Commerce
+- Fashion
+- Footwear
+- Direct to Consumer
+- Agentic Commerce
+- Universal Commerce Protocol
+- Model Context Protocol
+- Shopify
+- Catalog
+- Checkout
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v1
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- name: M.Gemi UCP Commerce MCP API
+  description: 'The Universal Commerce Protocol (UCP) shopping service for the M.Gemi
+    store, exposed over Model Context Protocol at https://mgemi.com/api/ucp/mcp. An
+    anonymous tools/list returns 13 tools with full JSON Schema inputSchemas covering
+    catalog search and lookup, product detail, cart create/read/update/cancel, and
+    checkout create/read/update/complete/cancel plus order retrieval. Checkout
+    completion requires contemporaneous buyer approval per the store agent instructions.'
+  humanURL: https://mgemi.com/llms.txt
+  baseURL: https://mgemi.com/api/ucp/mcp
+  tags:
+  - Agentic Commerce
+  - Model Context Protocol
+  - Universal Commerce Protocol
+  - Checkout
+  - Catalog
+  properties:
+  - type: MCPServer
+    url: mcp/m-gemi-mcp.yml
+  - type: Documentation
+    url: https://mgemi.com/agents.md
+  - type: Authentication
+    url: authentication/m-gemi-authentication.yml
+  - type: RateLimits
+    url: rate-limits/m-gemi-rate-limits.yml
+- name: M.Gemi Storefront Product JSON
+  description: 'The read-only Shopify storefront JSON surface for the M.Gemi catalog,
+    documented by the store''s own /llms.txt for agents that only need to read store
+    data without transacting: /products.json, /products/{handle}.json,
+    /collections/{handle}/products.json, /cart.js, /meta.json and /search. No
+    authentication is required. The store publishes 2,407 products across 709
+    collections.'
+  humanURL: https://mgemi.com/llms.txt
+  baseURL: https://mgemi.com
+  tags:
+  - Catalog
+  - Products
+  - E-Commerce
+  - Read Only
+  properties:
+  - type: Documentation
+    url: https://mgemi.com/llms.txt
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://mgemi.com
+- type: Documentation
+  url: https://mgemi.com/agents.md
+- type: LLMsTxt
+  url: llms/m-gemi-llms.txt
+- type: MCPServer
+  url: mcp/m-gemi-mcp.yml
+- type: WellKnown
+  url: well-known/m-gemi-well-known.yml
+- type: Authentication
+  url: authentication/m-gemi-authentication.yml
+- type: OAuthScopes
+  url: scopes/m-gemi-scopes.yml
+- type: Conventions
+  url: conventions/m-gemi-conventions.yml
+- type: Idempotency
+  url: conventions/m-gemi-conventions.yml
+- type: Conformance
+  url: conformance/m-gemi-conformance.yml
+- type: RateLimits
+  url: rate-limits/m-gemi-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/m-gemi-problem-types.yml
+- type: Plans
+  url: plans/m-gemi-plans-pricing.yml
+- type: Lifecycle
+  url: lifecycle/m-gemi-lifecycle.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DomainSecurity
+  url: security/m-gemi-domain-security.yml
+- type: Support
+  url: https://mgemi.com/pages/faq
+- type: Blog
+  url: https://mgemi.com/blogs/news
+- type: SignUp
+  url: https://mgemi.com/account/login
+- type: TermsOfService
+  url: https://mgemi.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://mgemi.com/policies/privacy-policy

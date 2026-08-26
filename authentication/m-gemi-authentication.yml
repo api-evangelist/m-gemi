@@ -1,0 +1,60 @@
+generated: '2026-08-25'
+method: probed
+source: https://mgemi.com/.well-known/openid-configuration + live probes of https://mgemi.com/api/ucp/mcp
+docs: https://mgemi.com/agents.md
+summary: >-
+  M.Gemi publishes no API-key program. Two distinct auth models are observable on the
+  store host: an anonymous/profile-scoped model on the UCP MCP commerce endpoint, and a
+  Shopify Customer Account OpenID Connect model for customer identity.
+schemes:
+- id: ucp-agent-profile
+  type: other
+  surface: https://mgemi.com/api/ucp/mcp
+  in: request-body
+  parameter: meta.ucp-agent.profile
+  description: >-
+    Every UCP MCP tool declares a required `meta.ucp-agent.profile` field - a URI pointing
+    at the calling agent's UCP profile document. It is a discovery/identity handle, not a
+    secret. tools/list and initialize succeed without it; a tools/call without it returns
+    JSON-RPC error -32001 "UCP discovery failed" with data.code invalid_profile_url.
+  observed: probed 2026-08-25
+- id: shopify-customer-account-oidc
+  type: openIdConnect
+  surface: https://mgemi.com/.well-known/openid-configuration
+  openid_connect_url: https://mgemi.com/.well-known/openid-configuration
+  issuer: https://shopify.com/authentication/13666484283
+  authorization_endpoint: https://shopify.com/authentication/13666484283/oauth/authorize
+  token_endpoint: https://shopify.com/authentication/13666484283/oauth/token
+  end_session_endpoint: https://shopify.com/authentication/13666484283/logout
+  jwks_uri: https://shopify.com/authentication/13666484283/.well-known/jwks.json
+  grant_types:
+  - authorization_code
+  - refresh_token
+  - urn:ietf:params:oauth:grant-type:jwt-bearer
+  response_types:
+  - code
+  pkce:
+  - S256
+  token_endpoint_auth_methods:
+  - client_secret_basic
+  - client_secret_post
+  id_token_signing_alg:
+  - RS256
+  scopes: scopes/m-gemi-scopes.yml
+  description: >-
+    Shopify Customer Account API OIDC discovery, served on M.Gemi's own store host and
+    scoped to M.Gemi's shop tenant. Governs customer sign-in at
+    https://mgemi.com/account/login.
+buyer_approval:
+  required: true
+  scope: checkout completion
+  statement: >-
+    "Checkout requires human approval. Agents must not complete payment without explicit
+    buyer consent."
+  source: https://mgemi.com/llms.txt
+no_api_keys:
+  finding: true
+  note: >-
+    No developer portal, no key issuance page and no API-key header were found on any
+    M.Gemi host. The commerce surface is reached through UCP agent profiles and buyer
+    approval rather than issued credentials.

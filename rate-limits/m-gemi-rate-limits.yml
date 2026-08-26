@@ -1,0 +1,35 @@
+generated: '2026-08-25'
+method: searched
+source: https://mgemi.com/llms.txt
+docs: https://mgemi.com/agents.md
+limit_count: 0
+note: >-
+  M.Gemi documents that rate limiting exists but publishes no number. The store's own
+  agent instructions say "Respect rate limits. The MCP endpoint is rate-limited per IP.
+  Back off on 429 responses." No limit, window, burst or quota is stated anywhere on the
+  store, and no RateLimit-* / X-RateLimit-* / Retry-After header was returned on any
+  observed response. An honest zero: the signal is qualitative only.
+limits: []
+exhaustion:
+  status_code: 429
+  documented: true
+  source: https://mgemi.com/llms.txt
+  scope: per IP
+  guidance: Back off on 429 responses.
+response_headers:
+  rate_limit_headers_returned: false
+  probed: 2026-08-25
+  checked_for: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset, X-RateLimit-Limit,
+    X-RateLimit-Remaining, Retry-After]
+  observed_instead:
+  - name: shopify-complexity-score
+    example: '1350'
+    detail: >-
+      Returned on the MCP tools/list response. A Shopify platform cost-of-request signal,
+      not a documented rate-limit budget - M.Gemi does not document it and no
+      remaining/limit companion header is returned, so an agent cannot compute headroom
+      from it.
+  - name: shopify-complexity-score-v2
+    example: '135'
+  - name: x-request-id
+    detail: Correlation id on every response.
