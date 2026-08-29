@@ -10,6 +10,17 @@ description: 'M.Gemi is a Boston-based direct-to-consumer footwear and leather-g
   catalog search, cart, checkout and order retrieval, alongside the read-only Shopify storefront
   product JSON endpoints its own agent instructions document. Customer identity is served by a
   Shopify Customer Account OpenID Connect discovery document on the store host.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.shopify.com/s/files/1/0136/6648/4283/files/logomark2_d8d577da-e62c-4ca0-85a8-03466eb5c403.png?v=1632354360
 url: https://raw.githubusercontent.com/api-evangelist/m-gemi/refs/heads/main/apis.yml
 x-type: company
