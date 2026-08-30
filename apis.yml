@@ -37,6 +37,19 @@ tags:
 - Direct to Consumer
 - Agentic Commerce
 - Universal Commerce Protocol
+- MCP
+- Shopify
+- Catalog
+- Checkout
+tags_raw:
+- Company
+- Retail
+- E-Commerce
+- Fashion
+- Footwear
+- Direct to Consumer
+- Agentic Commerce
+- Universal Commerce Protocol
 - Model Context Protocol
 - Shopify
 - Catalog
@@ -63,6 +76,12 @@ apis:
   baseURL: https://mgemi.com/api/ucp/mcp
   tags:
   - Agentic Commerce
+  - MCP
+  - Universal Commerce Protocol
+  - Checkout
+  - Catalog
+  tags_raw:
+  - Agentic Commerce
   - Model Context Protocol
   - Universal Commerce Protocol
   - Checkout
@@ -86,6 +105,11 @@ apis:
   humanURL: https://mgemi.com/llms.txt
   baseURL: https://mgemi.com
   tags:
+  - Catalog
+  - Product
+  - E-Commerce
+  - Read Only
+  tags_raw:
   - Catalog
   - Products
   - E-Commerce
