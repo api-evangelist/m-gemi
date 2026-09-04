@@ -21,6 +21,21 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - authentication
+  - scopes
+  - rate-limits
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://cdn.shopify.com/s/files/1/0136/6648/4283/files/logomark2_d8d577da-e62c-4ca0-85a8-03466eb5c403.png?v=1632354360
 url: https://raw.githubusercontent.com/api-evangelist/m-gemi/refs/heads/main/apis.yml
 x-type: company
